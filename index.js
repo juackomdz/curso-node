@@ -1,11 +1,15 @@
 const express = require("express")
 require("dotenv").config()
 const joi = require("joi")
+const log = require("./logger")
 
 const app = express()
 const port = process.env.PORT || 3000
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use(log)
 
 const users = [{
     "id": 1,
