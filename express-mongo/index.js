@@ -1,10 +1,22 @@
 const express = require("express")
 require("dotenv").config()
 const joi = require("joi")
+
 const log = require("./logger")
+const categoria = require("./routes/categoria")
+const producto = require("./routes/producto")
 
 const app = express()
+const mongoose = require("mongoose")
 const port = process.env.PORT || 3000
+
+mongoose.connect("mongodb://localhost:27017/mongo_express")
+    .then(() => {
+        console.log("conectado...")
+    })
+    .catch(e => {
+        console.log("error al conectar: " + e)
+    })
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -26,11 +38,6 @@ const users = [{
 }]
 
 
-app.get("/", (_, res) => {
-
-    res.send({ "mensaje": "metodo get" })
-})
-
 app.get("/usuarios/:id", (req, res) => {
 
     let usuario = existeUser(req.params.id)
@@ -48,18 +55,7 @@ app.get("/usuarios", (req, res) => {
     res.status(200).json(users)
 })
 
-app.get("/:id", (req, res) => {
 
-    let id = req.params.id
-    res.send({ "mensaje": "metodo get | id= " + id })
-})
-
-app.post("/:id/:nombre", (req, res) => {
-
-    let id = req.params.id
-    let nombre = req.params.nombre
-    res.send({ "mensaje": "metodo post | id = " + id + "nombre = " + nombre })
-})
 
 app.post("/usuarios", (req, res) => {
 
@@ -106,11 +102,6 @@ app.post("/usuarios", (req, res) => {
 
 })
 
-app.put("/", (req, res) => {
-
-    let id = req.query.id
-    res.send({ "mensaje": "metodo put | id=" + id })
-})
 
 app.put("/usuarios/:id", (req, res) => {
 
@@ -151,10 +142,6 @@ app.put("/usuarios/:id", (req, res) => {
 
 })
 
-app.delete("/", (req, res) => {
-
-    res.send({ "mensaje": "metodo delete" })
-})
 
 app.delete("/usuarios/:id", (req, res) => {
 
@@ -174,6 +161,11 @@ app.delete("/usuarios/:id", (req, res) => {
 
 
 })
+
+///---------------rutas con mongo----------------------------
+
+app.use("/api/v1/categorias", categoria)
+app.use("/api/v1/productos", producto)
 
 
 app.listen(port, () => {
