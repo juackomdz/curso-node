@@ -5,6 +5,7 @@ const joi = require("joi")
 const log = require("./logger")
 const categoria = require("./routes/categoria")
 const producto = require("./routes/producto")
+const user = require("./routes/usuario")
 
 const app = express()
 const mongoose = require("mongoose")
@@ -166,6 +167,7 @@ app.delete("/usuarios/:id", (req, res) => {
 
 app.use("/api/v1/categorias", categoria)
 app.use("/api/v1/productos", producto)
+app.use("/access", user)
 
 
 app.listen(port, () => {

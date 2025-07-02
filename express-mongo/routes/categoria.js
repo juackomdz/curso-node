@@ -3,8 +3,10 @@ const router = express.Router()
 
 const Categoria = require("../models/categoriaModel")
 
+const verify = require("../jwt/jwt")
 
-router.post("/", (req, res) => {
+
+router.post("/", verify, (req, res) => {
     let body = req.body
     let categoria = new Categoria({
         nombre: body.nombre,
@@ -19,7 +21,7 @@ router.post("/", (req, res) => {
 })
 
 
-router.get("/", (req, res) => {
+router.get("/", verify, (req, res) => {
 
     let datos = Categoria.find({ estado: true }).select({ estado: 0 })
 
@@ -29,7 +31,7 @@ router.get("/", (req, res) => {
 
 })
 
-router.get("/:id", (req, res) => {
+router.get("/:id", verify, (req, res) => {
 
     let id = req.params.id
     let categoria = Categoria.findById(id).select({ estado: 0 })
@@ -46,7 +48,7 @@ router.get("/:id", (req, res) => {
         .catch(e => res.status(400).json({ "mensaje": "error al traer datos: " + e }))
 })
 
-router.put("/:id", (req, res) => {
+router.put("/:id", verify, (req, res) => {
 
     let id = req.params.id
     let body = req.body
@@ -80,7 +82,7 @@ router.delete("/:id", (req, res) => {
 */
 ///--------------eliminado logico
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", verify, (req, res) => {
 
     let id = req.params.id
 

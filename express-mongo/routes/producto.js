@@ -3,8 +3,10 @@ const router = express.Router()
 
 const Producto = require("../models/productoModel")
 
+const verify = require("../jwt/jwt")
 
-router.post("/", (req, res) => {
+
+router.post("/", verify, (req, res) => {
 
     let body = req.body
     let producto = new Producto({
@@ -21,7 +23,7 @@ router.post("/", (req, res) => {
         .catch(e => res.status(400).json({ "mensaje": "error al crear: " + e }))
 })
 
-router.get("/", (req, res) => {
+router.get("/", verify, (req, res) => {
 
     let datos = Producto.find({ estado: true }).populate("categoria", "-estado").select({ estado: 0 }).exec()
 
@@ -30,7 +32,7 @@ router.get("/", (req, res) => {
         .catch(e => res.status(400).json({ "mensaje": "error al traer datos: " + e }))
 })
 
-router.get("/:id", (req, res) => {
+router.get("/:id", verify, (req, res) => {
 
     let id = req.params.id
     let datos = Producto.findOne({ estado: true, _id: id }).populate("categoria", "-estado").select({ estado: 0 }).exec()
@@ -48,7 +50,7 @@ router.get("/:id", (req, res) => {
 
 })
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", verify, (req, res) => {
     let id = req.params.id
 
     let datos = Producto.findOneAndUpdate({ _id: id }, { estado: false })
@@ -58,7 +60,7 @@ router.delete("/:id", (req, res) => {
         .catch(e => res.status(400).json({ "mensaje": "error al traer datos: " + e }))
 })
 
-router.put("/:id", (req, res) => {
+router.put("/:id", verify, (req, res) => {
 
     let id = req.params.id
 
