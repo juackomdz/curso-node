@@ -50,4 +50,48 @@ router.get("/:id", (req, res) => {
         .catch(e => res.status(400).json(e))
 })
 
+router.put("/:id", (req, res) => {
+    let id = parseInt(req.params.id)
+
+    prisma.producto.update({
+        where: {
+            id: id
+        },
+        data: req.body
+    })
+        .then(data => {
+            if (data === null) {
+                res.status(404).json({ mensaje: "producto no encontrado" })
+                return
+            }
+            res.status(200).json({ mensaje: "producto actualizado correctamente" })
+        })
+        .catch(e => res.status(400).json(e))
+})
+
+router.delete("/:id", async (req, res) => {
+
+    let id = parseInt(req.params.id)
+
+    const product = await prisma.producto.findFirst({
+        where: {
+            id: id
+        }
+    })
+
+    if (product === null) {
+        res.status(404).json({ mensaje: "producto no encontrado" })
+        return
+    } else {
+
+        prisma.producto.delete({
+            where: {
+                id: id
+            }
+        })
+            .then(res.status(200).json({ mensaje: "producto eliminado con exito" }))
+            .catch(e => res.status(400).json(e))
+    }
+})
+
 export default router
